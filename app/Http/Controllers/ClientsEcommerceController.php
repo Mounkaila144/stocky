@@ -21,7 +21,7 @@ class ClientsEcommerceController extends BaseController
 
     public function index(request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Client::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Client::class);
         // How many items do you want to display.
         $perPage = $request->limit;
         $pageStart = \Request::get('page', 1);
@@ -72,7 +72,7 @@ class ClientsEcommerceController extends BaseController
         $clientsWithoutEcommerce = \App\Models\Client::whereNotIn('id', function($query){
             $query->select('client_id')->from('ecommerce_clients');
         })->count();
-        
+
         return response()->json([
             'clients' => $data,
             'totalRows' => $totalRows,
@@ -84,7 +84,7 @@ class ClientsEcommerceController extends BaseController
 
     public function store(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'create', Client::class);
+        //$this->authorizeForUser($request->user('api'), 'create', Client::class);
 
         $this->validate($request, [
             'email'    => 'required|unique:ecommerce_clients',
@@ -110,7 +110,7 @@ class ClientsEcommerceController extends BaseController
                     'password'  => Hash::make($request['password']),
                     'status'    => 1,
                 ]);
-    
+
             }, 10);
          }
 
@@ -123,21 +123,21 @@ class ClientsEcommerceController extends BaseController
 
     public function show($id){
         //
-        
+
     }
 
     //------------- Update Customer -------------\\
 
     public function update(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'update', Client::class);
-        
+        //$this->authorizeForUser($request->user('api'), 'update', Client::class);
+
         $client_exist = EcommerceClient::where('client_id', $id)->exists();
 
         if($client_exist){
             $client_ecommerce = EcommerceClient::where('client_id' , $id)->first();
         }
-      
+
         $this->validate($request, [
             'email' => [
                 'required',
@@ -163,7 +163,7 @@ class ClientsEcommerceController extends BaseController
                 }
 
             }
-                  
+
             EcommerceClient::where('client_id' , $id)->update([
                 'email' => $request['email'],
                 'password' => $pass,
@@ -174,7 +174,7 @@ class ClientsEcommerceController extends BaseController
             ]);
 
         }, 10);
-        
+
         return response()->json(['success' => true]);
 
     }
@@ -183,7 +183,7 @@ class ClientsEcommerceController extends BaseController
 
     public function destroy(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', Client::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Client::class);
 
         Client::whereId($id)->update([
             'deleted_at' => Carbon::now(),

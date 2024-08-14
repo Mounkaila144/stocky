@@ -4,7 +4,7 @@ FROM php:8.1-fpm
 # Définir le répertoire de travail
 WORKDIR /var/www
 
-# Installer les dépendances système
+# Installer les dépendances système et Node.js
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
@@ -22,7 +22,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     nodejs \
     npm \
-    python-is-python3
+    python3 \
+    python3-pip
 
 # Installer les extensions PHP requises
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -47,7 +48,8 @@ COPY . /var/www
 RUN composer install
 
 # Installer les dépendances npm
-#RUN npm install
+RUN npm uninstall node-sass && npm install sass
+RUN npm install
 
 # Donner les permissions correctes
 RUN chown -R www-data:www-data /var/www \

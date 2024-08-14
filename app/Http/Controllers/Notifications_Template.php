@@ -20,12 +20,12 @@ class Notifications_Template extends Controller
     public function get_sms_template(Request $request)
     {
 
-        $this->authorizeForUser($request->user('api'), 'notification_template', Setting::class);
+        //$this->authorizeForUser($request->user('api'), 'notification_template', Setting::class);
 
         //---get sms body for Sale
 
         $get_type_sale = SMSMessage::where('name', 'sale')->where('deleted_at', '=', null)->first();
-        
+
         if($get_type_sale){
             $sms_body_sale = $get_type_sale->text;
         }else{
@@ -35,7 +35,7 @@ class Notifications_Template extends Controller
         //---get sms body for quotation
 
         $get_type_quotation = SMSMessage::where('name', 'quotation')->where('deleted_at', '=', null)->first();
-    
+
         if($get_type_quotation){
             $sms_body_quotation = $get_type_quotation->text;
         }else{
@@ -72,7 +72,7 @@ class Notifications_Template extends Controller
             $sms_body_payment_sent = '';
         }
 
-          
+
         return response()->json([
             'sms_body_sale' => $sms_body_sale,
             'sms_body_quotation' => $sms_body_quotation,
@@ -80,18 +80,18 @@ class Notifications_Template extends Controller
             'sms_body_purchase' => $sms_body_purchase,
             'sms_body_payment_sent' => $sms_body_payment_sent,
         ], 200);
-       
-       
+
+
     }
 
 
-   
+
      //-------------- update_sms_body ---------------\\
 
      public function update_sms_body(Request $request)
      {
- 
-        $this->authorizeForUser($request->user('api'), 'notification_template', Setting::class);
+
+        //$this->authorizeForUser($request->user('api'), 'notification_template', Setting::class);
 
         $smsMessage = SMSMessage::firstOrNew(['name' => $request['sms_body_type']]);
         $smsMessage->name = $request['sms_body_type'];
@@ -100,7 +100,7 @@ class Notifications_Template extends Controller
 
         return response()->json(['success' => true]);
 
- 
+
      }
 
 
@@ -109,12 +109,12 @@ class Notifications_Template extends Controller
     public function get_emails_template(Request $request)
     {
 
-        $this->authorizeForUser($request->user('api'), 'notification_template', Setting::class);
+        //$this->authorizeForUser($request->user('api'), 'notification_template', Setting::class);
 
         //---get sms body for Sale
 
         $email_sale = EmailMessage::where('name', 'sale')->where('deleted_at', '=', null)->first();
-        
+
         if($email_sale){
             $sale['subject'] = $email_sale->subject;
             $sale['body'] = $email_sale->body;
@@ -127,8 +127,8 @@ class Notifications_Template extends Controller
         //---get sms body for quotation
 
         $email_quotation = EmailMessage::where('name', 'quotation')->where('deleted_at', '=', null)->first();
-        
-            
+
+
         if($email_quotation){
             $quotation['subject'] = $email_quotation->subject;
             $quotation['body'] = $email_quotation->body;
@@ -136,12 +136,12 @@ class Notifications_Template extends Controller
             $quotation['subject'] = '';
             $quotation['body'] = '';
         }
- 
+
         //---get sms body for payment_received
 
         $email_payment_received = EmailMessage::where('name', 'payment_received')->where('deleted_at', '=', null)->first();
-        
-            
+
+
         if($email_payment_received){
             $payment_received['subject'] = $email_payment_received->subject;
             $payment_received['body'] = $email_payment_received->body;
@@ -154,7 +154,7 @@ class Notifications_Template extends Controller
 
         $email_purchase = EmailMessage::where('name', 'purchase')->where('deleted_at', '=', null)->first();
 
-            
+
         if($email_purchase){
             $purchase['subject'] = $email_purchase->subject;
             $purchase['body'] = $email_purchase->body;
@@ -162,12 +162,12 @@ class Notifications_Template extends Controller
             $purchase['subject'] = '';
             $purchase['body'] = '';
         }
- 
+
         //---get sms body for payment_sent
 
         $email_payment_sent = EmailMessage::where('name', 'payment_sent')->where('deleted_at', '=', null)->first();
 
-            
+
         if($email_payment_sent){
             $payment_sent['subject'] = $email_payment_sent->subject;
             $payment_sent['body'] = $email_payment_sent->body;
@@ -183,7 +183,7 @@ class Notifications_Template extends Controller
             'purchase' => $purchase,
             'payment_sent' => $payment_sent,
         ], 200);
-       
+
     }
 
 
@@ -191,8 +191,8 @@ class Notifications_Template extends Controller
 
     public function update_custom_email(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'notification_template', Setting::class);
-        
+        //$this->authorizeForUser($request->user('api'), 'notification_template', Setting::class);
+
         $requestData = $request->json();
         $email_type = $requestData->get('email_type');
 
@@ -215,10 +215,10 @@ class Notifications_Template extends Controller
 
         return response()->json(['success' => true]);
 
-       
+
 
     }
 
 
-   
+
 }

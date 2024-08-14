@@ -25,7 +25,7 @@ class TransferController extends BaseController
 
     public function index(request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Transfer::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Transfer::class);
         $role = Auth::user()->roles()->first();
         $view_records = Role::findOrFail($role->id)->inRole('record_view');
 
@@ -112,7 +112,7 @@ class TransferController extends BaseController
 
     public function store(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'create', Transfer::class);
+        //$this->authorizeForUser($request->user('api'), 'create', Transfer::class);
 
         request()->validate([
             'transfer.from_warehouse' => 'required',
@@ -140,7 +140,7 @@ class TransferController extends BaseController
             $data = $request['details'];
 
             foreach ($data as $key => $value) {
-               
+
                 $unit = Unit::where('id', $value['purchase_unit_id'])->first();
 
                 if ($request->transfer['statut'] == "completed") {
@@ -270,7 +270,7 @@ class TransferController extends BaseController
     public function update(Request $request, $id)
     {
 
-        $this->authorizeForUser($request->user('api'), 'update', Transfer::class);
+        //$this->authorizeForUser($request->user('api'), 'update', Transfer::class);
 
         request()->validate([
             'transfer.to_warehouse' => 'required',
@@ -285,7 +285,7 @@ class TransferController extends BaseController
             // Check If User Has Permission view All Records
             if (!$view_records) {
                 // Check If User->id === Transfer->id
-                $this->authorizeForUser($request->user('api'), 'check_record', $current_Transfer);
+                //$this->authorizeForUser($request->user('api'), 'check_record', $current_Transfer);
             }
 
             $Old_Details = TransferDetail::where('transfer_id', $id)->get();
@@ -569,7 +569,7 @@ class TransferController extends BaseController
 
     public function destroy(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', Transfer::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Transfer::class);
 
         \DB::transaction(function () use ($id, $request) {
             $role = Auth::user()->roles()->first();
@@ -580,7 +580,7 @@ class TransferController extends BaseController
             // Check If User Has Permission view All Records
             if (!$view_records) {
                 // Check If User->id === current_Transfer->id
-                $this->authorizeForUser($request->user('api'), 'check_record', $current_Transfer);
+                //$this->authorizeForUser($request->user('api'), 'check_record', $current_Transfer);
             }
 
             // Init Data with old Parametre
@@ -593,8 +593,8 @@ class TransferController extends BaseController
                      ->where('id', $value['product_id'])
                      ->first();
                      $unit = Unit::where('id', $product_unit_purchase_id['unitPurchase']->id)->first();
-                 } 
- 
+                 }
+
                 if ($current_Transfer->statut == "completed") {
                     if ($value['product_variant_id'] !== null) {
 
@@ -688,7 +688,7 @@ class TransferController extends BaseController
                         }
                     }
                 }
-                   
+
             }
 
             $current_Transfer->details()->delete();
@@ -706,7 +706,7 @@ class TransferController extends BaseController
     public function delete_by_selection(Request $request)
     {
 
-        $this->authorizeForUser($request->user('api'), 'delete', Transfer::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Transfer::class);
 
         \DB::transaction(function () use ($request) {
             $role = Auth::user()->roles()->first();
@@ -719,7 +719,7 @@ class TransferController extends BaseController
                 // Check If User Has Permission view All Records
                 if (!$view_records) {
                     // Check If User->id === Transfer->id
-                    $this->authorizeForUser($request->user('api'), 'check_record', $current_Transfer);
+                    //$this->authorizeForUser($request->user('api'), 'check_record', $current_Transfer);
                 }
 
                  // Init Data with old Parametre
@@ -732,7 +732,7 @@ class TransferController extends BaseController
                     ->where('id', $value['product_id'])
                     ->first();
                     $unit = Unit::where('id', $product_unit_purchase_id['unitPurchase']->id)->first();
-                } 
+                }
 
                if ($current_Transfer->statut == "completed") {
                    if ($value['product_variant_id'] !== null) {
@@ -827,7 +827,7 @@ class TransferController extends BaseController
                        }
                    }
                }
-                  
+
            }
 
             $current_Transfer->details()->delete();
@@ -865,7 +865,7 @@ class TransferController extends BaseController
     public function edit(Request $request, $id)
     {
 
-        $this->authorizeForUser($request->user('api'), 'update', Transfer::class);
+        //$this->authorizeForUser($request->user('api'), 'update', Transfer::class);
         $role = Auth::user()->roles()->first();
         $view_records = Role::findOrFail($role->id)->inRole('record_view');
         $Transfer_data = Transfer::with('details.product.unit')
@@ -876,7 +876,7 @@ class TransferController extends BaseController
         // Check If User Has Permission view All Records
         if (!$view_records) {
             // Check If User->id === Transfer->id
-            $this->authorizeForUser($request->user('api'), 'check_record', $Transfer_data);
+            //$this->authorizeForUser($request->user('api'), 'check_record', $Transfer_data);
         }
 
         if ($Transfer_data->from_warehouse_id) {
@@ -957,7 +957,7 @@ class TransferController extends BaseController
                 $data['product_variant_id'] = null;
                 $data['code'] = $detail['product']['code'];
                 $data['name'] = $detail['product']['name'];
-               
+
                 if ($unit && $unit->operator == '/') {
                     $data['stock'] = $item_product ? $item_product->qte * $unit->operator_value : 0;
                 } else if ($unit && $unit->operator == '*') {
@@ -1022,7 +1022,7 @@ class TransferController extends BaseController
     public function show(Request $request, $id)
     {
 
-        $this->authorizeForUser($request->user('api'), 'view', Transfer::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Transfer::class);
         $role = Auth::user()->roles()->first();
         $view_records = Role::findOrFail($role->id)->inRole('record_view');
         $Transfer_data = Transfer::with('details.product.unit')
@@ -1033,7 +1033,7 @@ class TransferController extends BaseController
         // Check If User Has Permission view All Records
         if (!$view_records) {
             // Check If User->id === Transfer->id
-            $this->authorizeForUser($request->user('api'), 'check_record', $Transfer_data);
+            //$this->authorizeForUser($request->user('api'), 'check_record', $Transfer_data);
         }
 
         $transfer['date'] = $Transfer_data->date;
@@ -1086,7 +1086,7 @@ class TransferController extends BaseController
 
     public function create(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'create', Transfer::class);
+        //$this->authorizeForUser($request->user('api'), 'create', Transfer::class);
 
        //get warehouses assigned to user
        $user_auth = auth()->user();
@@ -1096,10 +1096,10 @@ class TransferController extends BaseController
            $warehouses_id = UserWarehouse::where('user_id', $user_auth->id)->pluck('warehouse_id')->toArray();
            $warehouses = Warehouse::where('deleted_at', '=', null)->whereIn('id', $warehouses_id)->get(['id', 'name']);
        }
-       
+
         return response()->json(['warehouses' => $warehouses]);
     }
 
-  
+
 
 }

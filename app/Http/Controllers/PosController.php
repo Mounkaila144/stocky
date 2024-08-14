@@ -35,7 +35,7 @@ class PosController extends BaseController
 
     public function CreatePOS(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'Sales_pos', Sale::class);
+        //$this->authorizeForUser($request->user('api'), 'Sales_pos', Sale::class);
 
         request()->validate([
             'client_id' => 'required',
@@ -122,7 +122,7 @@ class PosController extends BaseController
             // Check If User Has Permission view All Records
             if (!$view_records) {
                 // Check If User->id === sale->id
-                $this->authorizeForUser($request->user('api'), 'check_record', $sale);
+                //$this->authorizeForUser($request->user('api'), 'check_record', $sale);
             }
 
             try {
@@ -137,7 +137,7 @@ class PosController extends BaseController
                 } else if ($due == $sale->GrandTotal) {
                     $payment_statut = 'unpaid';
                 }
-                              
+
                 if($request['amount'] > 0){
                     if ($request->payment['Reglement'] == 'credit card') {
                         $Client = Client::whereId($request->client_id)->first();
@@ -266,7 +266,7 @@ class PosController extends BaseController
                     }
 
                 }
-              
+
             } catch (Exception $e) {
                 return response()->json(['message' => $e->getMessage()], 500);
             }
@@ -283,7 +283,7 @@ class PosController extends BaseController
 
     public function get_draft_sales(request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'Sales_pos', Sale::class);
+        //$this->authorizeForUser($request->user('api'), 'Sales_pos', Sale::class);
         $role = Auth::user()->roles()->first();
         $view_records = Role::findOrFail($role->id)->inRole('record_view');
         // How many items do you want to display.
@@ -295,7 +295,7 @@ class PosController extends BaseController
         $order = 'id';
         $dir = 'DESC';
         $helpers = new helpers();
-        
+
         $data = array();
 
         // Check If User Has Permission View  All Records
@@ -306,20 +306,20 @@ class PosController extends BaseController
                     return $query->where('user_id', '=', Auth::user()->id);
                 }
             });
-    
+
 
         $totalRows = $draft_sales->count();
         if($perPage == "-1"){
             $perPage = $totalRows;
         }
-        
+
         $drafts = $draft_sales->offset($offSet)
             ->limit($perPage)
             ->orderBy($order, $dir)
             ->get();
 
         foreach ($drafts as $draft) {
-            
+
             $item['id'] = $draft['id'];
             $item['date'] = $draft['date'];
             $item['Ref'] = $draft['Ref'];
@@ -327,23 +327,23 @@ class PosController extends BaseController
             $item['client_name'] = $draft['client']['name'];
             $item['GrandTotal'] = number_format($draft['GrandTotal'], 2, '.', '');
             $item['actions'] = '';
-            
+
             $data[] = $item;
         }
-        
-    
+
+
         return response()->json([
             'totalRows' => $totalRows,
             'draft_sales' => $data,
         ]);
     }
-  
+
 
     //------------ Create Draft --------------\\
 
     public function CreateDraft(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'Sales_pos', Sale::class);
+        //$this->authorizeForUser($request->user('api'), 'Sales_pos', Sale::class);
 
         request()->validate([
             'client_id' => 'required',
@@ -401,26 +401,26 @@ class PosController extends BaseController
 
      public function remove_draft_sale(Request $request, $id)
      {
-        $this->authorizeForUser($request->user('api'), 'Sales_pos', Sale::class);
- 
+        //$this->authorizeForUser($request->user('api'), 'Sales_pos', Sale::class);
+
          \DB::transaction(function () use ($id, $request) {
- 
+
              $role = Auth::user()->roles()->first();
              $view_records = Role::findOrFail($role->id)->inRole('record_view');
              $draft = DraftSale::findOrFail($id);
- 
+
              // Check If User Has Permission view All Records
              if (!$view_records) {
                  // Check If User->id === draft->id
-                 $this->authorizeForUser($request->user('api'), 'check_record', $draft);
+                 //$this->authorizeForUser($request->user('api'), 'check_record', $draft);
              }
              $draft->details()->delete();
              $draft->update([
                  'deleted_at' => Carbon::now(),
              ]);
- 
+
          }, 10);
- 
+
          return response()->json(['success' => true]);
      }
 
@@ -428,7 +428,7 @@ class PosController extends BaseController
 
     public function submit_sale_from_draft(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'Sales_pos', Sale::class);
+        //$this->authorizeForUser($request->user('api'), 'Sales_pos', Sale::class);
 
         request()->validate([
             'client_id' => 'required',
@@ -518,7 +518,7 @@ class PosController extends BaseController
                 // Check If User Has Permission view All Records
                 if (!$view_records) {
                     // Check If User->id === sale->id
-                    $this->authorizeForUser($request->user('api'), 'check_record', $sale);
+                    //$this->authorizeForUser($request->user('api'), 'check_record', $sale);
                 }
 
                 try {
@@ -533,7 +533,7 @@ class PosController extends BaseController
                     } else if ($due == $sale->GrandTotal) {
                         $payment_statut = 'unpaid';
                     }
-                                
+
                     if($request['amount'] > 0){
                         if ($request->payment['Reglement'] == 'credit card') {
                             $Client = Client::whereId($request->client_id)->first();
@@ -662,7 +662,7 @@ class PosController extends BaseController
                         }
 
                     }
-                
+
                 } catch (Exception $e) {
                     return response()->json(['message' => $e->getMessage()], 500);
                 }
@@ -687,7 +687,7 @@ class PosController extends BaseController
 
     public function data_draft_convert_sale(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'Sales_pos', Sale::class);
+        //$this->authorizeForUser($request->user('api'), 'Sales_pos', Sale::class);
         $clients = Client::where('deleted_at', '=', null)->get(['id', 'name']);
         $settings = Setting::where('deleted_at', '=', null)->with('Client')->first();
         $accounts = Account::where('deleted_at', '=', null)->orderBy('id', 'desc')->get(['id','account_name']);
@@ -703,7 +703,7 @@ class PosController extends BaseController
              $warehouses_id = UserWarehouse::where('user_id', $user_auth->id)->pluck('warehouse_id')->toArray();
              $warehouses = Warehouse::where('deleted_at', '=', null)->whereIn('id', $warehouses_id)->get(['id', 'name']);
           }
-        
+
 
         if ($draft_sale_data->client_id) {
             if (Client::where('id', $draft_sale_data->client_id)->where('deleted_at', '=', null)->first()) {
@@ -755,7 +755,7 @@ class PosController extends BaseController
                 $data['no_unit'] = 0;
             }
 
-    
+
             if ($detail->product_variant_id) {
                 $item_product = product_warehouse::where('product_id', $detail->product_id)
                     ->where('deleted_at', '=', null)
@@ -770,7 +770,7 @@ class PosController extends BaseController
                 $data['product_variant_id'] = $detail->product_variant_id;
                 $data['code'] = $productsVariants->code;
                 $data['name'] = '['.$productsVariants->name . ']' . $detail['product']['name'];
-                
+
                 if ($unit && $unit->operator == '/') {
                 $stock = $item_product ? $item_product->qte * $unit->operator_value : 0;
                 } else if ($unit && $unit->operator == '*') {
@@ -798,7 +798,7 @@ class PosController extends BaseController
                 }
 
             }
-            
+
             $data['id'] = $detail->id;
             $data['fix_stock'] = $detail['product']['type'] !='is_service'?$stock:'---';
             $data['current'] = $detail['product']['type'] !='is_service'?$stock:'---';
@@ -824,7 +824,7 @@ class PosController extends BaseController
 
             $tax_price = $detail->TaxNet * (($detail->price - $data['DiscountNet']) / 100);
             $data['Unit_price'] = $detail->price;
-            
+
             $data['tax_percent'] = $detail->TaxNet;
             $data['tax_method'] = $detail->tax_method;
             $data['discount'] = $detail->discount;
@@ -842,7 +842,7 @@ class PosController extends BaseController
 
             $details[] = $data;
         }
-        
+
         $categories = Category::where('deleted_at', '=', null)->get(['id', 'name']);
         $brands = Brand::where('deleted_at', '=', null)->get();
         $stripe_key = config('app.STRIPE_KEY');
@@ -862,13 +862,13 @@ class PosController extends BaseController
             'details'        => $details,
         ]);
     }
- 
+
 
     //------------ Get Products--------------\\
 
     public function GetProductsByParametre(request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'Sales_pos', Sale::class);
+        //$this->authorizeForUser($request->user('api'), 'Sales_pos', Sale::class);
 
         // How many items do you want to display.
         $perPage = PosSetting::where('deleted_at', '=', null)->first()->products_per_page;
@@ -898,10 +898,10 @@ class PosController extends BaseController
                 ->where(function ($query) use ($request) {
                     if ($request->stock == '1' && $request->product_service == '1') {
                         return $query->where('qte', '>', 0)->orWhere('manage_stock', false);
-    
+
                     }elseif($request->stock == '1' && $request->product_service == '0') {
                         return $query->where('qte', '>', 0)->orWhere('manage_stock', true);
-    
+
                     }else{
                         return $query->where('manage_stock', true);
                     }
@@ -981,7 +981,7 @@ class PosController extends BaseController
             $item['unitSale'] = $product_warehouse['product']['unitSale']?$product_warehouse['product']['unitSale']->ShortName:'';
             $item['qte'] = $product_warehouse['product']->type!='is_service'?$product_warehouse->qte:'---';
             $item['product_type'] = $product_warehouse['product']->type;
-            
+
             if ($product_warehouse['product']->TaxNet !== 0.0) {
 
                 //Exclusive
@@ -1011,7 +1011,7 @@ class PosController extends BaseController
 
     public function GetELementPos(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'Sales_pos', Sale::class);
+        //$this->authorizeForUser($request->user('api'), 'Sales_pos', Sale::class);
         $clients = Client::where('deleted_at', '=', null)->get(['id', 'name']);
         $settings = Setting::where('deleted_at', '=', null)->with('Client')->first();
         $accounts = Account::where('deleted_at', '=', null)->orderBy('id', 'desc')->get(['id','account_name']);
@@ -1047,8 +1047,8 @@ class PosController extends BaseController
           }
 
 
-      
-        
+
+
 
         if ($settings->client_id) {
             if (Client::where('id', $settings->client_id)->where('deleted_at', '=', null)->first()) {
@@ -1086,9 +1086,9 @@ class PosController extends BaseController
 
       public function getNumberOrderDraft()
       {
-  
+
           $last = DB::table('draft_sales')->latest('id')->first();
-  
+
           if ($last) {
               $item = $last->Ref;
               $nwMsg = explode("_", $item);

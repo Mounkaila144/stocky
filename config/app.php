@@ -128,10 +128,10 @@ return [
     | Stripe Key
     |--------------------------------------------------------------------------
     |
-    | 
+    |
     |
      */
-    
+
     'STRIPE_KEY' => env('STRIPE_KEY'),
     'STRIPE_SECRET' => env('STRIPE_SECRET'),
 
@@ -191,7 +191,9 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Nwidart\Modules\LaravelModulesServiceProvider::class,
-        
+        App\Providers\TenancyServiceProvider::class, // <-- here
+
+
     ],
 
     /*

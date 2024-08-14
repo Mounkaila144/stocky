@@ -12,10 +12,10 @@ class SettingSeeder extends Seeder
      */
     public function run()
     {
-       // Insert some stuff
-        DB::table('settings')->insert(
+        // Insert some stuff
+        DB::table('settings')->updateOrInsert(
+            ['id' => 1],
             array(
-                'id' => 1,
                 'email' => 'admin@example.com',
                 'currency_id' => 1,
                 'client_id' => 1,
@@ -23,14 +23,14 @@ class SettingSeeder extends Seeder
                 'is_invoice_footer' => 0,
                 'invoice_footer' => Null,
                 'warehouse_id' => Null,
-                'CompanyName' => 'Stocky',
-                'CompanyPhone' => '6315996770',
-                'CompanyAdress' => '3618 Abia Martin Drive',
-                'footer' => 'Stocky - Ultimate Inventory With POS',
-                'developed_by' => 'Stocky',
+                'CompanyName' => 'Nigerdev',
+                'CompanyPhone' => '+227 97977199',
+                'CompanyAdress' => 'Niamey',
+                'footer' => 'Nigerdev - Ultimate Inventory With POS',
+                'developed_by' => 'Nigerdev',
                 'logo' => 'logo-default.png',
             )
-            
+
         );
     }
 }

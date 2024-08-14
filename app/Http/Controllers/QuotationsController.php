@@ -43,7 +43,7 @@ class QuotationsController extends BaseController
     //---------------- GET ALL QUOTATIONS ---------------\\
     public function index(request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Quotation::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Quotation::class);
         $role = Auth::user()->roles()->first();
         $view_records = Role::findOrFail($role->id)->inRole('record_view');
 
@@ -126,7 +126,7 @@ class QuotationsController extends BaseController
         }
 
         $customers = client::where('deleted_at', '=', null)->get();
-        
+
         //get warehouses assigned to user
         $user_auth = auth()->user();
         if($user_auth->is_all_warehouses){
@@ -148,7 +148,7 @@ class QuotationsController extends BaseController
 
     public function store(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'create', Quotation::class);
+        //$this->authorizeForUser($request->user('api'), 'create', Quotation::class);
 
         request()->validate([
             'client_id' => 'required',
@@ -203,7 +203,7 @@ class QuotationsController extends BaseController
 
     public function update(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'update', Quotation::class);
+        //$this->authorizeForUser($request->user('api'), 'update', Quotation::class);
 
         request()->validate([
             'warehouse_id' => 'required',
@@ -218,7 +218,7 @@ class QuotationsController extends BaseController
             // Check If User Has Permission view All Records
             if (!$view_records) {
                 // Check If User->id === Quotation->id
-                $this->authorizeForUser($request->user('api'), 'check_record', $current_Quotation);
+                //$this->authorizeForUser($request->user('api'), 'check_record', $current_Quotation);
             }
 
             $old_quotation_details = QuotationDetail::where('quotation_id', $id)->get();
@@ -289,7 +289,7 @@ class QuotationsController extends BaseController
 
     public function destroy(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', Quotation::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Quotation::class);
 
         \DB::transaction(function () use ($id, $request) {
 
@@ -300,7 +300,7 @@ class QuotationsController extends BaseController
             // Check If User Has Permission view All Records
             if (!$view_records) {
                 // Check If User->id === Quotation->id
-                $this->authorizeForUser($request->user('api'), 'check_record', $Quotation);
+                //$this->authorizeForUser($request->user('api'), 'check_record', $Quotation);
             }
             $Quotation->details()->delete();
             $Quotation->update([
@@ -316,7 +316,7 @@ class QuotationsController extends BaseController
 
     public function delete_by_selection(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', Quotation::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Quotation::class);
 
         \DB::transaction(function () use ($request) {
 
@@ -329,7 +329,7 @@ class QuotationsController extends BaseController
                 // Check If User Has Permission view All Records
                 if (!$view_records) {
                     // Check If User->id === Quotation->id
-                    $this->authorizeForUser($request->user('api'), 'check_record', $Quotation);
+                    //$this->authorizeForUser($request->user('api'), 'check_record', $Quotation);
                 }
                 $Quotation->details()->delete();
                 $Quotation->update([
@@ -347,7 +347,7 @@ class QuotationsController extends BaseController
 
     public function show(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Quotation::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Quotation::class);
         $role = Auth::user()->roles()->first();
         $view_records = Role::findOrFail($role->id)->inRole('record_view');
         $quotation_data = Quotation::with('details.product.unitSale')
@@ -359,7 +359,7 @@ class QuotationsController extends BaseController
         // Check If User Has Permission view All Records
         if (!$view_records) {
             // Check If User->id === Quotation->id
-            $this->authorizeForUser($request->user('api'), 'check_record', $quotation_data);
+            //$this->authorizeForUser($request->user('api'), 'check_record', $quotation_data);
         }
 
         $quote['Ref'] = $quotation_data->Ref;
@@ -407,7 +407,7 @@ class QuotationsController extends BaseController
                 $data['code'] = $detail['product']['code'];
                 $data['name'] = $detail['product']['name'];
             }
-            
+
             $data['quantity']  = $detail->quantity;
             $data['total']     = $detail->total;
             $data['price']     = $detail->price;
@@ -519,7 +519,7 @@ class QuotationsController extends BaseController
                 $data['code'] = $detail['product']['code'];
                 $data['name'] = $detail['product']['name'];
             }
-            
+
                 $data['detail_id'] = $detail_id += 1;
                 $data['quantity'] = number_format($detail->quantity, 2, '.', '');
                 $data['total'] = number_format($detail->total, 2, '.', '');
@@ -578,7 +578,7 @@ class QuotationsController extends BaseController
     public function create(Request $request)
     {
 
-        $this->authorizeForUser($request->user('api'), 'create', Quotation::class);
+        //$this->authorizeForUser($request->user('api'), 'create', Quotation::class);
 
         //get warehouses assigned to user
         $user_auth = auth()->user();
@@ -604,7 +604,7 @@ class QuotationsController extends BaseController
     public function edit(Request $request, $id)
     {
 
-        $this->authorizeForUser($request->user('api'), 'update', Quotation::class);
+        //$this->authorizeForUser($request->user('api'), 'update', Quotation::class);
         $role = Auth::user()->roles()->first();
         $view_records = Role::findOrFail($role->id)->inRole('record_view');
         $Quotation = Quotation::with('details.product.unitSale')
@@ -614,7 +614,7 @@ class QuotationsController extends BaseController
         // Check If User Has Permission view All Records
         if (!$view_records) {
             // Check If User->id === Quotation->id
-            $this->authorizeForUser($request->user('api'), 'check_record', $Quotation);
+            //$this->authorizeForUser($request->user('api'), 'check_record', $Quotation);
         }
 
         if ($Quotation->client_id) {
@@ -779,7 +779,7 @@ class QuotationsController extends BaseController
 
     public function SendEmail(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Quotation::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Quotation::class);
 
         //Quotation
         $quotation = Quotation::with('client')->where('deleted_at', '=', null)->findOrFail($request->id);
@@ -789,10 +789,10 @@ class QuotationsController extends BaseController
 
          //settings
          $settings = Setting::where('deleted_at', '=', null)->first();
-     
+
          //the custom msg of quotation
          $emailMessage  = EmailMessage::where('name', 'quotation')->first();
- 
+
          if($emailMessage){
              $message_body = $emailMessage->body;
              $message_subject = $emailMessage->subject;
@@ -800,20 +800,20 @@ class QuotationsController extends BaseController
              $message_body = '';
              $message_subject = '';
          }
- 
+
          //Tags
          $random_number = Str::random(10);
          $quotation_url = url('/api/quote_pdf/' . $request->id.'?'.$random_number);
          $quotation_number = $quotation->Ref;
- 
+
          $total_amount = $currency .' '.number_format($quotation->GrandTotal, 2, '.', ',');
-        
+
          $contact_name = $quotation['client']->name;
          $business_name = $settings->CompanyName;
- 
+
          //receiver email
          $receiver_email = $quotation['client']->email;
- 
+
          //replace the text with tags
          $message_body = str_replace('{contact_name}', $contact_name, $message_body);
          $message_body = str_replace('{business_name}', $business_name, $message_body);
@@ -825,7 +825,7 @@ class QuotationsController extends BaseController
         $email['body'] = $message_body;
         $email['company_name'] = $business_name;
 
-        $this->Set_config_mail(); 
+        $this->Set_config_mail();
 
         $mail = Mail::to($receiver_email)->send(new CustomEmail($email));
 
@@ -836,7 +836,7 @@ class QuotationsController extends BaseController
 
     public function Send_SMS(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Quotation::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Quotation::class);
 
         //Quotation
         $quotation = Quotation::with('client')->where('deleted_at', '=', null)->findOrFail($request->id);
@@ -865,7 +865,7 @@ class QuotationsController extends BaseController
         $quotation_number = $quotation->Ref;
 
         $total_amount = $currency .' '.number_format($quotation->GrandTotal, 2, '.', ',');
-        
+
         $contact_name = $quotation['client']->name;
         $business_name = $settings->CompanyName;
 
@@ -889,7 +889,7 @@ class QuotationsController extends BaseController
 
                 $client = new Client_Twilio($account_sid, $auth_token);
                 $client->messages->create($receiverNumber, [
-                    'from' => $twilio_number, 
+                    'from' => $twilio_number,
                     'body' => $message_text]);
 
             } catch (Exception $e) {
@@ -909,7 +909,7 @@ class QuotationsController extends BaseController
         //                 'from' => $nexmo_from,
         //                 'text' => $message_text
         //             ]);
-                            
+
         //         } catch (Exception $e) {
         //             return response()->json(['message' => $e->getMessage()], 500);
         //         }
@@ -926,25 +926,25 @@ class QuotationsController extends BaseController
                     ->setHost($BASE_URL)
                     ->setApiKeyPrefix('Authorization', 'App')
                     ->setApiKey('Authorization', $API_KEY);
-                
+
                 $client = new Client_guzzle();
-                
+
                 $sendSmsApi = new SendSMSApi($client, $configuration);
                 $destination = (new SmsDestination())->setTo($receiverNumber);
                 $message = (new SmsTextualMessage())
                     ->setFrom($SENDER)
                     ->setText($message_text)
                     ->setDestinations([$destination]);
-                    
+
                 $request = (new SmsAdvancedTextualRequest())->setMessages([$message]);
-                
+
                 try {
                     $smsResponse = $sendSmsApi->sendSmsMessage($request);
                     echo ("Response body: " . $smsResponse);
                 } catch (Throwable $apiException) {
                     echo("HTTP Code: " . $apiException->getCode() . "\n");
                 }
-                
+
         }
 
         return response()->json(['success' => true]);
@@ -954,56 +954,56 @@ class QuotationsController extends BaseController
      // quotation_send_whatsapp
      public function quotation_send_whatsapp(Request $request)
      {
- 
+
           //Quotation
           $quotation = Quotation::with('client')->where('deleted_at', '=', null)->findOrFail($request->id);
- 
+
           $helpers = new helpers();
           $currency = $helpers->Get_Currency();
-  
+
           //settings
           $settings = Setting::where('deleted_at', '=', null)->first();
-  
+
           //the custom msg of quotation
           $smsMessage  = SMSMessage::where('name', 'quotation')->first();
-  
+
           if($smsMessage){
               $message_text = $smsMessage->text;
           }else{
               $message_text = '';
           }
-  
+
           //Tags
           $random_number = Str::random(10);
           $quotation_url = url('/api/quote_pdf/' . $request->id.'?'.$random_number);
           $quotation_number = $quotation->Ref;
-  
+
           $total_amount = $currency .' '.number_format($quotation->GrandTotal, 2, '.', ',');
-          
+
           $contact_name = $quotation['client']->name;
           $business_name = $settings->CompanyName;
-  
+
           //receiver phone
           $receiverNumber = $quotation['client']->phone;
- 
+
            // Check if the phone number is empty or null
          if (empty($receiverNumber) || $receiverNumber == null || $receiverNumber == 'null' || $receiverNumber == '') {
              return response()->json(['error' => 'Phone number is missing'], 400);
          }
-  
-  
+
+
           //replace the text with tags
           $message_text = str_replace('{contact_name}', $contact_name, $message_text);
           $message_text = str_replace('{business_name}', $business_name, $message_text);
           $message_text = str_replace('{quotation_url}', $quotation_url, $message_text);
           $message_text = str_replace('{quotation_number}', $quotation_number, $message_text);
           $message_text = str_replace('{total_amount}', $total_amount, $message_text);
-         
+
           return response()->json(['message' => $message_text , 'phone' => $receiverNumber ]);
- 
- 
+
+
      }
-    
+
 
 }
 

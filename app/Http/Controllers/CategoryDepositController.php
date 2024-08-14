@@ -15,7 +15,7 @@ class CategoryDepositController extends BaseController
 
     public function index(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', DepositCategory::class);
+        //$this->authorizeForUser($request->user('api'), 'view', DepositCategory::class);
         // How many items do you want to display.
         $perPage = $request->limit;
         $pageStart = \Request::get('page', 1);
@@ -26,7 +26,7 @@ class CategoryDepositController extends BaseController
 
         // Check If User Has Permission View  All Records
         $DepositCategory = DepositCategory::where('deleted_at', '=', null)
-            
+
             ->where(function ($query) use ($request) {
                 return $query->when($request->filled('search'), function ($query) use ($request) {
                     return $query->where('title', 'LIKE', "%{$request->search}%");
@@ -53,7 +53,7 @@ class CategoryDepositController extends BaseController
 
     public function store(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'create', DepositCategory::class);
+        //$this->authorizeForUser($request->user('api'), 'create', DepositCategory::class);
 
         request()->validate([
             'title' => 'required',
@@ -70,14 +70,14 @@ class CategoryDepositController extends BaseController
 
     public function show($id){
     //
-    
+
     }
 
     //-------------- Update Category ---------------\\
 
     public function update(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'update', DepositCategory::class);
+        //$this->authorizeForUser($request->user('api'), 'update', DepositCategory::class);
         $DepositCategory = DepositCategory::findOrFail($id);
 
         request()->validate([
@@ -96,7 +96,7 @@ class CategoryDepositController extends BaseController
 
     public function destroy(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', DepositCategory::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', DepositCategory::class);
         $DepositCategory = DepositCategory::findOrFail($id);
 
         $DepositCategory->update([
@@ -110,7 +110,7 @@ class CategoryDepositController extends BaseController
 
     public function delete_by_selection(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', DepositCategory::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', DepositCategory::class);
         $selectedIds = $request->selectedIds;
 
         foreach ($selectedIds as $category_id) {

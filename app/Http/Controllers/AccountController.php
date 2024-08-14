@@ -15,7 +15,7 @@ class AccountController extends BaseController
 
     public function index(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Account::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Account::class);
         // How many items do you want to display.
         $perPage = $request->limit;
         $pageStart = \Request::get('page', 1);
@@ -26,7 +26,7 @@ class AccountController extends BaseController
 
         // Check If User Has Permission View  All Records
         $Accounts= Account::where('deleted_at', '=', null)
-            
+
             ->where(function ($query) use ($request) {
                 return $query->when($request->filled('search'), function ($query) use ($request) {
                     return $query->where('account_num', 'LIKE', "%{$request->search}%")
@@ -51,7 +51,7 @@ class AccountController extends BaseController
             $item['account_name'] = $account->account_name;
             $item['balance'] = $account->balance;
             $item['note'] = $account->note;
-           
+
             $data[] = $item;
         }
 
@@ -66,7 +66,7 @@ class AccountController extends BaseController
 
     public function store(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'create', Account::class);
+        //$this->authorizeForUser($request->user('api'), 'create', Account::class);
 
         request()->validate([
             'account_num' => 'required',
@@ -89,14 +89,14 @@ class AccountController extends BaseController
 
     public function show($id){
     //
-    
+
     }
 
     //-------------- Update Account ---------------\\
 
     public function update(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'update', Account::class);
+        //$this->authorizeForUser($request->user('api'), 'update', Account::class);
         $Account = Account::findOrFail($id);
 
         request()->validate([
@@ -118,7 +118,7 @@ class AccountController extends BaseController
 
     public function destroy(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', Account::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Account::class);
         $Account = Account::findOrFail($id);
 
         $Account->update([
@@ -132,7 +132,7 @@ class AccountController extends BaseController
 
     public function delete_by_selection(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', Account::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Account::class);
         $selectedIds = $request->selectedIds;
 
         foreach ($selectedIds as $account_id) {

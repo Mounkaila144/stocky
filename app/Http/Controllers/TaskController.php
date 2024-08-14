@@ -22,7 +22,7 @@ class TaskController extends Controller
 
      public function index(Request $request)
      {
-         $this->authorizeForUser($request->user('api'), 'view', Task::class);
+         //$this->authorizeForUser($request->user('api'), 'view', Task::class);
          // How many items do you want to display.
          $perPage = $request->limit;
          $pageStart = \Request::get('page', 1);
@@ -48,7 +48,7 @@ class TaskController extends Controller
              4 => 'company_id',
         );
          $tasks = Task::with('company', 'project')->where('deleted_at', '=', null);
- 
+
           //Multiple Filter
         $Filtred = $helpers->filter($tasks, $columns, $param, $request)
         // Search With Multiple Param
@@ -76,7 +76,7 @@ class TaskController extends Controller
              ->limit($perPage)
              ->orderBy($order, $dir)
              ->get();
- 
+
          foreach ($tasks as $task) {
             $item['id']           = $task->id;
             $item['title']        = $task->title;
@@ -85,13 +85,13 @@ class TaskController extends Controller
             $item['project_title']= $task['project']->title;
             $item['company_name'] = $task['company']->name;
             $item['status']       = $task->status;
-            
+
              $data[] = $item;
          }
 
          $companies = Company::where('deleted_at', '=', null)->get(['id', 'name']);
          $projects = Project::where('deleted_at', '=', null)->orderBy('id', 'desc')->get(['id','title']);
- 
+
 
         $count_not_started = Task::where('deleted_at', '=', null)
         ->where('status', '=', 'not_started')
@@ -108,7 +108,7 @@ class TaskController extends Controller
         $count_completed = Task::where('deleted_at', '=', null)
         ->where('status', '=', 'completed')
         ->count();
- 
+
 
          return response()->json([
              'tasks' => $data,
@@ -120,7 +120,7 @@ class TaskController extends Controller
              'count_completed' => $count_completed,
              'totalRows' => $totalRows,
          ]);
- 
+
      }
 
     /**
@@ -130,7 +130,7 @@ class TaskController extends Controller
      */
     public function create(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Task::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Task::class);
 
         $projects = Project::where('deleted_at', '=', null)->orderBy('id', 'desc')->get(['id','title']);
         $companies = Company::where('deleted_at', '=', null)->orderBy('id', 'desc')->get(['id','name']);
@@ -139,7 +139,7 @@ class TaskController extends Controller
             'projects' => $projects,
             'companies' => $companies,
         ]);
-        
+
     }
 
     /**
@@ -150,7 +150,7 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Task::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Task::class);
 
         $request->validate([
             'title'           => 'required|string|max:255',
@@ -185,7 +185,7 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Task::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Task::class);
 
 
         $task = Task::where('deleted_at', '=', null)->findOrFail($id);
@@ -208,7 +208,7 @@ class TaskController extends Controller
      */
     public function edit(Request $request , $id)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Task::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Task::class);
 
         $task = Task::where('deleted_at', '=', null)->findOrFail($id);
         $assigned_employees = EmployeeTask::where('task_id', $id)->pluck('employee_id')->toArray();
@@ -235,7 +235,7 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Task::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Task::class);
 
         $request->validate([
             'title'           => 'required|string|max:255',
@@ -271,7 +271,7 @@ class TaskController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Task::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Task::class);
 
         Task::whereId($id)->update([
             'deleted_at' => Carbon::now(),
@@ -281,6 +281,6 @@ class TaskController extends Controller
 
     }
 
-  
+
 
 }

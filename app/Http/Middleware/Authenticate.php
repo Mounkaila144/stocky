@@ -18,19 +18,16 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-        
 
-        $installed = Storage::disk('public')->exists('installed');
-        if ($installed === false) {
-            return route('setup');
-        } else {
+
+
             if ($request->is('store') || $request->is('store/*')) {
                 return route('store.login');
             }
-            
+
             if (! $request->expectsJson()) {
                 return route('login');
             }
-        }
+
     }
 }

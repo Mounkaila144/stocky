@@ -12,17 +12,17 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-       // Insert some stuff
-        DB::table('users')->insert(
+        // Insert some stuff
+        DB::table('users')->updateOrInsert(
+            ['id' => 1],
             array(
-                'id' => 1,
-                'firstname' => 'William',
-                'lastname' => 'Castillo',
-                'username' => 'William Castillo',
+                'firstname' => 'Mounkaila',
+                'lastname' => 'Boubacar',
+                'username' => 'mounkaila144',
                 'email' => 'admin@example.com',
                 'password' => '$2y$10$IFj6SwqC0Sxrsiv4YkCt.OJv1UV4mZrWuyLoRG7qt47mseP9mJ58u',
                 'avatar' => 'no_avatar.png',
-                'phone' => '0123456789',
+                'phone' => '+22797977199',
                 'role_id' => 1,
                 'statut' => 1,
                 'is_all_warehouses' => 1,

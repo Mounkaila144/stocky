@@ -20,7 +20,7 @@ class PayrollController extends Controller
 
     public function index(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Payroll::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Payroll::class);
 
         // How many items do you want to display.
         $perPage = $request->limit;
@@ -59,7 +59,7 @@ class PayrollController extends Controller
             ->get();
 
         foreach ($payrolls_data as $payroll) {
- 
+
             $item['id']            = $payroll->id;
             $item['Ref']           = $payroll->Ref;
             $item['account_id']    = $payroll->account_id;
@@ -70,7 +70,7 @@ class PayrollController extends Controller
             $item['amount']        = $payroll->amount;
             $item['payment_method']= $payroll->payment_method;
             $item['payment_status']= $payroll->payment_status;
-            
+
             $data[] = $item;
         }
 
@@ -89,14 +89,14 @@ class PayrollController extends Controller
 
     public function create(Request $request)
     {
-        // 
+        //
     }
 
     //----------- Store new Payroll --------------\\
 
     public function store(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'create', Payroll::class);
+        //$this->authorizeForUser($request->user('api'), 'create', Payroll::class);
 
         request()->validate([
             'date'            => 'required',
@@ -137,13 +137,13 @@ class PayrollController extends Controller
 
     public function show($id){
         //
-        
+
     }
 
 
     public function edit(Request $request ,$id)
     {
-        // 
+        //
 
     }
 
@@ -151,7 +151,7 @@ class PayrollController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'update', Payroll::class);
+        //$this->authorizeForUser($request->user('api'), 'update', Payroll::class);
 
         request()->validate([
             'date'            => 'required',
@@ -204,7 +204,7 @@ class PayrollController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', Payroll::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Payroll::class);
         \DB::transaction(function () use ($id, $request) {
             $payroll = Payroll::findOrFail($id);
 
@@ -232,9 +232,9 @@ class PayrollController extends Controller
 
       public function getNumberOrder()
       {
-  
+
           $last = DB::table('payrolls')->latest('id')->first();
-  
+
           if ($last) {
               $item = $last->Ref;
               $nwMsg = explode("_", $item);
@@ -244,7 +244,7 @@ class PayrollController extends Controller
               $code = 'PS_1';
           }
           return $code;
-  
+
       }
 
 

@@ -25,7 +25,7 @@ class ClientController extends BaseController
 
     public function index(request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Client::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Client::class);
         // How many items do you want to display.
         $perPage = $request->limit;
         $pageStart = \Request::get('page', 1);
@@ -116,7 +116,7 @@ class ClientController extends BaseController
         })->count();
 
         $module_name = config('store.name');
-        
+
         return response()->json([
             'clients' => $data,
             'company_info' => $company_info,
@@ -131,7 +131,7 @@ class ClientController extends BaseController
 
     public function store(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'create', Client::class);
+        //$this->authorizeForUser($request->user('api'), 'create', Client::class);
 
         $this->validate($request, [
             'name' => 'required',
@@ -155,15 +155,15 @@ class ClientController extends BaseController
 
     public function show($id){
         //
-        
+
     }
 
     //------------- Update Customer -------------\\
 
     public function update(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'update', Client::class);
-        
+        //$this->authorizeForUser($request->user('api'), 'update', Client::class);
+
         $this->validate($request, [
             'name' => 'required',
             ]
@@ -186,7 +186,7 @@ class ClientController extends BaseController
 
     public function destroy(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', Client::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Client::class);
 
         Client::whereId($id)->update([
             'deleted_at' => Carbon::now(),
@@ -198,7 +198,7 @@ class ClientController extends BaseController
 
     public function delete_by_selection(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', Client::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Client::class);
         $selectedIds = $request->selectedIds;
 
         foreach ($selectedIds as $Client_id) {
@@ -252,9 +252,9 @@ class ClientController extends BaseController
      // import clients
      public function import_clients(Request $request)
      {
- 
-         ini_set('max_execution_time', 600); //600 seconds = 10 minutes 
-        
+
+         ini_set('max_execution_time', 600); //600 seconds = 10 minutes
+
          $file = $request->file('clients');
          $ext = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
          if ($ext != 'csv') {
@@ -268,7 +268,7 @@ class ClientController extends BaseController
              if (($handle = fopen($file->getPathname(), "r")) !== false) {
                  $max_line_length = defined('MAX_LINE_LENGTH') ? MAX_LINE_LENGTH : 10000;
                  $header = fgetcsv($handle, $max_line_length, ';'); // Use semicolon as the delimiter
-             
+
                  // Process the header row
                  $escapedHeader = [];
                  foreach ($header as $key => $value) {
@@ -276,7 +276,7 @@ class ClientController extends BaseController
                      $escapedItem = preg_replace('/[^a-z]/', '', $lheader);
                      $escapedHeader[] = $escapedItem;
                  }
-             
+
                  $header_colcount = count($header);
                  while (($row = fgetcsv($handle, $max_line_length, ';')) !== false) { // Use semicolon as the delimiter
                      $row_colcount = count($row);
@@ -285,7 +285,7 @@ class ClientController extends BaseController
                          $row = array_map(function($value) {
                              return $value === '' ? null : $value;
                          }, $row);
-                         
+
                          $entry = array_combine($escapedHeader, $row);
                          $data[] = $entry;
                      } else {
@@ -297,10 +297,10 @@ class ClientController extends BaseController
              } else {
                  return null;
              }
-             
- 
+
+
              $cleanedData = [];
- 
+
              foreach ($data as $row) {
                  $cleanedRow = [];
                  foreach ($row as $key => $value) {
@@ -309,17 +309,17 @@ class ClientController extends BaseController
                  }
                  $cleanedData[] = $cleanedRow;
              }
-         
-            
+
+
              $rules = array('name' => 'required');
- 
+
              //-- Create New Client
              foreach ($cleanedData as $key => $value) {
                  $input['name'] = $value['name'];
- 
+
                  $validator = Validator::make($input, $rules);
                  if (!$validator->fails()) {
-                     
+
                      Client::create([
                          'name' => $value['name'],
                          'code' => $this->getNumberOrder(),
@@ -330,29 +330,29 @@ class ClientController extends BaseController
                          'city' => $value['city'] == '' ? null : $value['city'],
                          'tax_number' => $value['taxnumber'] == '' ? null : $value['taxnumber'],
                      ]);
- 
+
                  }
-                
- 
+
+
              }
- 
+
              return response()->json([
                  'status' => true,
              ], 200);
          }
- 
+
      }
- 
+
 
 
      //------------- clients_pay_due -------------\\
 
      public function clients_pay_due(Request $request)
      {
-         $this->authorizeForUser($request->user('api'), 'pay_due', Client::class);
-        
+         //$this->authorizeForUser($request->user('api'), 'pay_due', Client::class);
+
          if($request['amount'] > 0){
-            $client_sales_due = Sale::where('deleted_at', '=', null) 
+            $client_sales_due = Sale::where('deleted_at', '=', null)
             ->where('statut', 'completed')
             ->where([
                 ['payment_statut', '!=', 'paid'],
@@ -403,17 +403,17 @@ class ClientController extends BaseController
                 $paid_amount_total -= $amount;
             }
         }
-        
+
          return response()->json(['success' => true]);
- 
+
      }
 
     //------------- clients_pay_sale_return_due -------------\\
 
     public function pay_sale_return_due(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'pay_sale_return_due', Client::class);
-        
+        //$this->authorizeForUser($request->user('api'), 'pay_sale_return_due', Client::class);
+
         if($request['amount'] > 0){
             $client_sell_return_due = SaleReturn::where('deleted_at', '=', null)
             ->where([
@@ -465,7 +465,7 @@ class ClientController extends BaseController
                 $paid_amount_total -= $amount;
             }
         }
-        
+
         return response()->json(['success' => true]);
 
     }

@@ -16,7 +16,7 @@ class TransferMoneyController extends BaseController
 
     public function index(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', TransferMoney::class);
+        //$this->authorizeForUser($request->user('api'), 'view', TransferMoney::class);
         // How many items do you want to display.
         $perPage = $request->limit;
         $pageStart = \Request::get('page', 1);
@@ -27,7 +27,7 @@ class TransferMoneyController extends BaseController
 
         // Check If User Has Permission View  All Records
         $transfers = TransferMoney::with('from_account', 'to_account')->where('deleted_at', '=', null)
-            
+
             ->where(function ($query) use ($request) {
                 return $query->when($request->filled('search'), function ($query) use ($request) {
                     return  $query->where(function ($query) use ($request) {
@@ -62,7 +62,7 @@ class TransferMoneyController extends BaseController
             $item['to_account_id']       = $transfer->to_account_id;
             $item['amount']       = $transfer->amount;
             $item['date']         = $transfer->date;
-           
+
             $data[] = $item;
         }
 
@@ -80,7 +80,7 @@ class TransferMoneyController extends BaseController
 
     public function store(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'create', TransferMoney::class);
+        //$this->authorizeForUser($request->user('api'), 'create', TransferMoney::class);
 
 
         request()->validate([
@@ -93,7 +93,7 @@ class TransferMoneyController extends BaseController
         'from_account_id.different' => 'From and to accounts cannot be the same.',
         'to_account_id.different' => 'To and from accounts cannot be the same.'
         ]);
-       
+
 
         // Additional check if from_account_id and to_account_id are not the same
         if ($request->from_account_id === $request->to_account_id) {
@@ -108,7 +108,7 @@ class TransferMoneyController extends BaseController
         if ($from_account->balance < $request->amount) {
             return response()->json(['error' => 'Insufficient balance in the from account.'], 400);
         }
-         
+
         \DB::transaction(function () use ($request, $from_account, $to_account) {
 
             $from_account->update([
@@ -135,19 +135,19 @@ class TransferMoneyController extends BaseController
 
     public function show($id){
     //
-    
+
     }
 
     //-------------- Update TransferMoney ---------------\\
 
     public function update(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'update', TransferMoney::class);
-        
+        //$this->authorizeForUser($request->user('api'), 'update', TransferMoney::class);
+
 
         $transfer = TransferMoney::findOrFail($id);
 
-            
+
         request()->validate([
             'amount' => 'required',
             'date' => 'required',
@@ -166,14 +166,14 @@ class TransferMoneyController extends BaseController
         if (($from_account->balance + $transfer->amount) < $request->amount) {
             return response()->json(['error' => 'Insufficient balance in the from account.'], 400);
         }
-           
+
 
         \DB::transaction(function () use ($request, $id, $from_account, $to_account, $transfer) {
 
             $from_account->update([
                 'balance' => $from_account->balance + $transfer->amount - $request->amount,
             ]);
-    
+
             $to_account->update([
                 'balance' => $to_account->balance - $transfer->amount + $request->amount,
             ]);
@@ -193,7 +193,7 @@ class TransferMoneyController extends BaseController
 
     public function destroy(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', TransferMoney::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', TransferMoney::class);
 
         \DB::transaction(function () use ($request, $id) {
 
@@ -214,7 +214,7 @@ class TransferMoneyController extends BaseController
             $transfer->update([
                 'deleted_at' => Carbon::now(),
             ]);
-            
+
         }, 10);
 
         return response()->json(['success' => true], 200);

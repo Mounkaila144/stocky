@@ -19,7 +19,7 @@ class DepositsController extends BaseController
 
     public function index(request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Deposit::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Deposit::class);
 
         // How many items do you want to display.
         $perPage = $request->limit;
@@ -101,7 +101,7 @@ class DepositsController extends BaseController
 
     public function store(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'create', Deposit::class);
+        //$this->authorizeForUser($request->user('api'), 'create', Deposit::class);
 
         \DB::transaction(function () use ($request) {
             request()->validate([
@@ -137,7 +137,7 @@ class DepositsController extends BaseController
 
     public function show($id){
         //
-        
+
         }
 
     //-------------- Update  Deposit -----------\\
@@ -145,7 +145,7 @@ class DepositsController extends BaseController
     public function update(Request $request, $id)
     {
 
-        $this->authorizeForUser($request->user('api'), 'update', Deposit::class);
+        //$this->authorizeForUser($request->user('api'), 'update', Deposit::class);
 
         \DB::transaction(function () use ($request , $id) {
             $role = Auth::user()->roles()->first();
@@ -155,9 +155,9 @@ class DepositsController extends BaseController
             // Check If User Has Permission view All Records
             if (!$view_records) {
                 // Check If User->id === deposit->id
-                $this->authorizeForUser($request->user('api'), 'check_record', $deposit);
+                //$this->authorizeForUser($request->user('api'), 'check_record', $deposit);
             }
-       
+
             request()->validate([
                 'deposit.date' => 'required',
                 'deposit.category_id' => 'required',
@@ -196,7 +196,7 @@ class DepositsController extends BaseController
 
     public function destroy(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', Deposit::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Deposit::class);
         $role = Auth::user()->roles()->first();
         $view_records = Role::findOrFail($role->id)->inRole('record_view');
         $deposit = Deposit::findOrFail($id);
@@ -204,7 +204,7 @@ class DepositsController extends BaseController
         // Check If User Has Permission view All Records
         if (!$view_records) {
             // Check If User->id === deposit->id
-            $this->authorizeForUser($request->user('api'), 'check_record', $deposit);
+            //$this->authorizeForUser($request->user('api'), 'check_record', $deposit);
         }
 
         Deposit::whereId($id)->update([
@@ -228,7 +228,7 @@ class DepositsController extends BaseController
 
     public function delete_by_selection(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', Deposit::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Deposit::class);
         $selectedIds = $request->selectedIds;
         $role = Auth::user()->roles()->first();
         $view_records = Role::findOrFail($role->id)->inRole('record_view');
@@ -239,7 +239,7 @@ class DepositsController extends BaseController
             // Check If User Has Permission view All Records
             if (!$view_records) {
                 // Check If User->id === deposit->id
-                $this->authorizeForUser($request->user('api'), 'check_record', $deposit);
+                //$this->authorizeForUser($request->user('api'), 'check_record', $deposit);
             }
 
             $account = Account::where('id', $deposit->account_id)->exists();
@@ -255,7 +255,7 @@ class DepositsController extends BaseController
             Deposit::whereId($deposit_id)->update([
                 'deleted_at' => Carbon::now(),
             ]);
-            
+
         }
         return response()->json(['success' => true]);
     }
@@ -285,7 +285,7 @@ class DepositsController extends BaseController
     public function create(Request $request)
     {
 
-        $this->authorizeForUser($request->user('api'), 'create', Deposit::class);
+        //$this->authorizeForUser($request->user('api'), 'create', Deposit::class);
 
         $deposits_category = DepositCategory::where('deleted_at', '=', null)->get(['id', 'title']);
         $accounts = Account::where('deleted_at', '=', null)->get(['id', 'account_name']);
@@ -301,7 +301,7 @@ class DepositsController extends BaseController
     public function edit(Request $request, $id)
     {
 
-        $this->authorizeForUser($request->user('api'), 'update', Deposit::class);
+        //$this->authorizeForUser($request->user('api'), 'update', Deposit::class);
         $role = Auth::user()->roles()->first();
         $view_records = Role::findOrFail($role->id)->inRole('record_view');
         $Deposit = Deposit::where('deleted_at', '=', null)->findOrFail($id);
@@ -309,7 +309,7 @@ class DepositsController extends BaseController
         // Check If User Has Permission view All Records
         if (!$view_records) {
             // Check If User->id === Deposit->id
-            $this->authorizeForUser($request->user('api'), 'check_record', $Deposit);
+            //$this->authorizeForUser($request->user('api'), 'check_record', $Deposit);
         }
 
         if ($Deposit->account_id) {

@@ -39,7 +39,7 @@ class PaymentSalesController extends BaseController
 
     public function index(request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'Reports_payments_Sales', PaymentSale::class);
+        //$this->authorizeForUser($request->user('api'), 'Reports_payments_Sales', PaymentSale::class);
 
         // How many items do you want to display.
         $perPage = $request->limit;
@@ -130,7 +130,7 @@ class PaymentSalesController extends BaseController
 
     public function store(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'create', PaymentSale::class);
+        //$this->authorizeForUser($request->user('api'), 'create', PaymentSale::class);
 
         \DB::transaction(function () use ($request) {
             $helpers = new helpers();
@@ -141,7 +141,7 @@ class PaymentSalesController extends BaseController
             // Check If User Has Permission view All Records
             if (!$view_records) {
                 // Check If User->id === sale->id
-                $this->authorizeForUser($request->user('api'), 'check_record', $sale);
+                //$this->authorizeForUser($request->user('api'), 'check_record', $sale);
             }
 
             try {
@@ -299,14 +299,14 @@ class PaymentSalesController extends BaseController
 
     public function show($id){
     //
-        
+
     }
 
     //----------- Update Payments Sale --------------\\
 
     public function update(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'update', PaymentSale::class);
+        //$this->authorizeForUser($request->user('api'), 'update', PaymentSale::class);
 
         \DB::transaction(function () use ($id, $request) {
             $helpers = new helpers();
@@ -317,7 +317,7 @@ class PaymentSalesController extends BaseController
             // Check If User Has Permission view All Records
             if (!$view_records) {
                 // Check If User->id === payment->id
-                $this->authorizeForUser($request->user('api'), 'check_record', $payment);
+                //$this->authorizeForUser($request->user('api'), 'check_record', $payment);
             }
 
             $sale = Sale::find($payment->sale_id);
@@ -372,7 +372,7 @@ class PaymentSalesController extends BaseController
                         'payment_statut' => $payment_statut,
                     ]);
 
-                } 
+                }
 
             } catch (Exception $e) {
                 return response()->json(['message' => $e->getMessage()], 500);
@@ -390,7 +390,7 @@ class PaymentSalesController extends BaseController
 
     public function destroy(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', PaymentSale::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', PaymentSale::class);
 
         \DB::transaction(function () use ($id, $request) {
             $role = Auth::user()->roles()->first();
@@ -400,7 +400,7 @@ class PaymentSalesController extends BaseController
             // Check If User Has Permission view All Records
             if (!$view_records) {
                 // Check If User->id === payment->id
-                $this->authorizeForUser($request->user('api'), 'check_record', $payment);
+                //$this->authorizeForUser($request->user('api'), 'check_record', $payment);
             }
 
             $sale = Sale::find($payment->sale_id);
@@ -423,7 +423,7 @@ class PaymentSalesController extends BaseController
                     \Stripe\Refund::create([
                         'charge' => $PaymentWithCreditCard->charge_id,
                     ]);
-    
+
                     $PaymentWithCreditCard->delete();
                 }
             }
@@ -520,7 +520,7 @@ class PaymentSalesController extends BaseController
 
     public function SendEmail(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', PaymentSale::class);
+        //$this->authorizeForUser($request->user('api'), 'view', PaymentSale::class);
         //PaymentSale
         $payment = PaymentSale::with('sale.client')->findOrFail($request->id);
 
@@ -529,7 +529,7 @@ class PaymentSalesController extends BaseController
 
         //settings
         $settings = Setting::where('deleted_at', '=', null)->first();
-    
+
         //the custom msg of payment_received
         $emailMessage  = EmailMessage::where('name', 'payment_received')->first();
 
@@ -540,12 +540,12 @@ class PaymentSalesController extends BaseController
             $message_body = '';
             $message_subject = '';
         }
-    
-        
+
+
         $payment_number = $payment->Ref;
 
         $total_amount = $currency .' '.number_format($payment->montant, 2, '.', ',');
-    
+
         $contact_name = $payment['sale']['client']->name;
         $business_name = $settings->CompanyName;
 
@@ -562,28 +562,28 @@ class PaymentSalesController extends BaseController
         $email['body'] = $message_body;
         $email['company_name'] = $business_name;
 
-        $this->Set_config_mail(); 
+        $this->Set_config_mail();
 
         $mail = Mail::to($receiver_email)->send(new CustomEmail($email));
 
         return $mail;
     }
-   
- 
-   
-   
+
+
+
+
     //-------------------Sms Notifications -----------------\\
 
     public function Send_SMS(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', PaymentSale::class);
+        //$this->authorizeForUser($request->user('api'), 'view', PaymentSale::class);
 
         //PaymentSale
         $payment = PaymentSale::with('sale.client')->findOrFail($request->id);
 
         //settings
         $settings = Setting::where('deleted_at', '=', null)->first();
-        
+
         $default_sms_gateway = sms_gateway::where('id' , $settings->sms_gateway)
          ->where('deleted_at', '=', null)->first();
 
@@ -598,14 +598,14 @@ class PaymentSalesController extends BaseController
         }else{
             $message_text = '';
         }
-        
+
         $payment_number = $payment->Ref;
 
         $total_amount = $currency .' '.number_format($payment->montant, 2, '.', ',');
-        
+
         $contact_name = $payment['sale']['client']->name;
         $business_name = $settings->CompanyName;
-    
+
         //receiver phone
         $receiverNumber = $payment['sale']['client']->phone;
 
@@ -618,16 +618,16 @@ class PaymentSalesController extends BaseController
         //twilio
         if($default_sms_gateway->title == "twilio"){
             try {
-    
+
                 $account_sid = env("TWILIO_SID");
                 $auth_token = env("TWILIO_TOKEN");
                 $twilio_number = env("TWILIO_FROM");
-    
+
                 $client = new Client_Twilio($account_sid, $auth_token);
                 $client->messages->create($receiverNumber, [
-                    'from' => $twilio_number, 
+                    'from' => $twilio_number,
                     'body' => $message_text]);
-        
+
             } catch (Exception $e) {
                 return response()->json(['message' => $e->getMessage()], 500);
             }
@@ -639,13 +639,13 @@ class PaymentSalesController extends BaseController
         //         $basic  = new \Nexmo\Client\Credentials\Basic(env("NEXMO_KEY"), env("NEXMO_SECRET"));
         //         $client = new \Nexmo\Client($basic);
         //         $nexmo_from = env("NEXMO_FROM");
-        
+
         //         $message = $client->message()->send([
         //             'to' => $receiverNumber,
         //             'from' => $nexmo_from,
         //             'text' => $message_text
         //         ]);
-                        
+
         //     } catch (Exception $e) {
         //         return response()->json(['message' => $e->getMessage()], 500);
         //     }
@@ -662,25 +662,25 @@ class PaymentSalesController extends BaseController
                 ->setHost($BASE_URL)
                 ->setApiKeyPrefix('Authorization', 'App')
                 ->setApiKey('Authorization', $API_KEY);
-            
+
             $client = new Client_guzzle();
-            
+
             $sendSmsApi = new SendSMSApi($client, $configuration);
             $destination = (new SmsDestination())->setTo($receiverNumber);
             $message = (new SmsTextualMessage())
                 ->setFrom($SENDER)
                 ->setText($message_text)
                 ->setDestinations([$destination]);
-                
+
             $request = (new SmsAdvancedTextualRequest())->setMessages([$message]);
-            
+
             try {
                 $smsResponse = $sendSmsApi->sendSmsMessage($request);
                 echo ("Response body: " . $smsResponse);
             } catch (Throwable $apiException) {
                 echo("HTTP Code: " . $apiException->getCode() . "\n");
             }
-            
+
         }
 
         return response()->json(['success' => true]);

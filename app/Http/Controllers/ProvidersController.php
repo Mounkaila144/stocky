@@ -24,7 +24,7 @@ class ProvidersController extends BaseController
 
     public function index(request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Provider::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Provider::class);
 
         // How many items do you want to display.
         $perPage = $request->limit;
@@ -116,7 +116,7 @@ class ProvidersController extends BaseController
 
     public function store(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'create', Provider::class);
+        //$this->authorizeForUser($request->user('api'), 'create', Provider::class);
 
         request()->validate([
             'name' => 'required',
@@ -139,14 +139,14 @@ class ProvidersController extends BaseController
 
     public function show($id){
         //
-        
+
         }
 
     //----------- Update Supplier-------\\
 
     public function update(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'update', Provider::class);
+        //$this->authorizeForUser($request->user('api'), 'update', Provider::class);
 
         request()->validate([
             'name' => 'required',
@@ -169,7 +169,7 @@ class ProvidersController extends BaseController
 
     public function destroy(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', Provider::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Provider::class);
 
         Provider::whereId($id)->update([
             'deleted_at' => Carbon::now(),
@@ -183,7 +183,7 @@ class ProvidersController extends BaseController
     public function delete_by_selection(Request $request)
     {
 
-        $this->authorizeForUser($request->user('api'), 'delete', Provider::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Provider::class);
 
         $selectedIds = $request->selectedIds;
         foreach ($selectedIds as $Provider_id) {
@@ -263,7 +263,7 @@ class ProvidersController extends BaseController
                         'tax_number' => $value['tax_number'] == '' ? null : $value['tax_number'],
                     ]);
                 }
-                
+
             }
 
             return response()->json([
@@ -278,8 +278,8 @@ class ProvidersController extends BaseController
 
     public function pay_supplier_due(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'pay_supplier_due', Provider::class);
-       
+        //$this->authorizeForUser($request->user('api'), 'pay_supplier_due', Provider::class);
+
         if($request['amount'] > 0){
            $provider_purchases_due = Purchase::where('deleted_at', '=', null)
            ->where('statut', 'received')
@@ -332,7 +332,7 @@ class ProvidersController extends BaseController
                $paid_amount_total -= $amount;
            }
        }
-       
+
         return response()->json(['success' => true]);
 
     }
@@ -341,8 +341,8 @@ class ProvidersController extends BaseController
 
     public function pay_purchase_return_due(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'pay_purchase_return_due', Provider::class);
-        
+        //$this->authorizeForUser($request->user('api'), 'pay_purchase_return_due', Provider::class);
+
         if($request['amount'] > 0){
             $supplier_purchase_return_due = PurchaseReturn::where('deleted_at', '=', null)
             ->where([
@@ -394,7 +394,7 @@ class ProvidersController extends BaseController
                 $paid_amount_total -= $amount;
             }
         }
-        
+
         return response()->json(['success' => true]);
 
     }

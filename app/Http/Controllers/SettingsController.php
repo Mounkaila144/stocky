@@ -24,7 +24,7 @@ class SettingsController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'update', Setting::class);
+        //$this->authorizeForUser($request->user('api'), 'update', Setting::class);
 
         $setting = Setting::findOrFail($id);
         $currentAvatar = $setting->logo;
@@ -129,14 +129,14 @@ class SettingsController extends Controller
 
      public function get_pos_Settings(Request $request)
      {
-         $this->authorizeForUser($request->user('api'), 'pos_settings', Setting::class);
- 
+         //$this->authorizeForUser($request->user('api'), 'pos_settings', Setting::class);
+
          $PosSetting = PosSetting::where('deleted_at', '=', null)->first();
 
          return response()->json([
              'pos_settings' => $PosSetting
             ], 200);
-    
+
     }
 
 
@@ -144,7 +144,7 @@ class SettingsController extends Controller
 
     public function update_pos_settings(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'pos_settings', Setting::class);
+        //$this->authorizeForUser($request->user('api'), 'pos_settings', Setting::class);
 
         request()->validate([
             'note_customer' => 'required',
@@ -179,13 +179,13 @@ class SettingsController extends Controller
         return response()->json(['success' => true]);
 
     }
-    
+
 
     //-------------- Get All Settings ---------------\\
 
     public function getSettings(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Setting::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Setting::class);
 
         $settings = Setting::where('deleted_at', '=', null)->first();
         if ($settings) {
@@ -269,7 +269,7 @@ class SettingsController extends Controller
             return response()->json([
                 'settings' => $item ,
                 'currencies' => $Currencies,
-                'clients' => $clients , 
+                'clients' => $clients ,
                 'warehouses' => $warehouses,
                 'sms_gateway' => $sms_gateway,
                 'zones_array' => $zones_array,
@@ -289,7 +289,7 @@ class SettingsController extends Controller
         Artisan::call('route:clear');
     }
 
-   
+
     //-------------- Set Environment Value ---------------\\
 
     public function setEnvironmentValue(array $values)
@@ -299,29 +299,29 @@ class SettingsController extends Controller
         $str .= "\r\n";
         if (count($values) > 0) {
             foreach ($values as $envKey => $envValue) {
-    
+
                 $keyPosition = strpos($str, "$envKey=");
                 $endOfLinePosition = strpos($str, "\n", $keyPosition);
                 $oldLine = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
-    
+
                 if (is_bool($keyPosition) && $keyPosition === false) {
                     // variable doesnot exist
                     $str .= "$envKey=$envValue";
                     $str .= "\r\n";
                 } else {
-                    // variable exist                    
+                    // variable exist
                     $str = str_replace($oldLine, "$envKey=$envValue", $str);
-                }            
+                }
             }
         }
-    
+
         $str = substr($str, 0, -1);
         if (!file_put_contents($envFile, $str)) {
             return false;
         }
-    
-        app()->loadEnvironmentFrom($envFile);    
-    
+
+        app()->loadEnvironmentFrom($envFile);
+
         return true;
     }
 

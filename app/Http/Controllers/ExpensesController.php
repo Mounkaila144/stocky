@@ -21,7 +21,7 @@ class ExpensesController extends BaseController
 
     public function index(request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Expense::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Expense::class);
 
         // How many items do you want to display.
         $perPage = $request->limit;
@@ -121,7 +121,7 @@ class ExpensesController extends BaseController
 
     public function store(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'create', Expense::class);
+        //$this->authorizeForUser($request->user('api'), 'create', Expense::class);
 
         \DB::transaction(function () use ($request) {
             request()->validate([
@@ -160,7 +160,7 @@ class ExpensesController extends BaseController
 
     public function show($id){
         //
-        
+
         }
 
     //-------------- Update  Expense -----------\\
@@ -168,7 +168,7 @@ class ExpensesController extends BaseController
     public function update(Request $request, $id)
     {
 
-        $this->authorizeForUser($request->user('api'), 'update', Expense::class);
+        //$this->authorizeForUser($request->user('api'), 'update', Expense::class);
         \DB::transaction(function () use ($request, $id) {
             $role = Auth::user()->roles()->first();
             $view_records = Role::findOrFail($role->id)->inRole('record_view');
@@ -177,7 +177,7 @@ class ExpensesController extends BaseController
             // Check If User Has Permission view All Records
             if (!$view_records) {
                 // Check If User->id === expense->id
-                $this->authorizeForUser($request->user('api'), 'check_record', $expense);
+                //$this->authorizeForUser($request->user('api'), 'check_record', $expense);
             }
 
             request()->validate([
@@ -221,7 +221,7 @@ class ExpensesController extends BaseController
 
     public function destroy(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', Expense::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Expense::class);
         $role = Auth::user()->roles()->first();
         $view_records = Role::findOrFail($role->id)->inRole('record_view');
         $expense = Expense::findOrFail($id);
@@ -229,7 +229,7 @@ class ExpensesController extends BaseController
         // Check If User Has Permission view All Records
         if (!$view_records) {
             // Check If User->id === expense->id
-            $this->authorizeForUser($request->user('api'), 'check_record', $expense);
+            //$this->authorizeForUser($request->user('api'), 'check_record', $expense);
         }
 
         Expense::whereId($id)->update([
@@ -253,7 +253,7 @@ class ExpensesController extends BaseController
 
     public function delete_by_selection(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', Expense::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Expense::class);
         $selectedIds = $request->selectedIds;
         $role = Auth::user()->roles()->first();
         $view_records = Role::findOrFail($role->id)->inRole('record_view');
@@ -264,12 +264,12 @@ class ExpensesController extends BaseController
             // Check If User Has Permission view All Records
             if (!$view_records) {
                 // Check If User->id === expense->id
-                $this->authorizeForUser($request->user('api'), 'check_record', $expense);
+                //$this->authorizeForUser($request->user('api'), 'check_record', $expense);
             }
             Expense::whereId($expense_id)->update([
                 'deleted_at' => Carbon::now(),
             ]);
-    
+
             $account = Account::where('id', $expense->account_id)->exists();
 
             if ($account) {
@@ -308,7 +308,7 @@ class ExpensesController extends BaseController
     public function create(Request $request)
     {
 
-        $this->authorizeForUser($request->user('api'), 'create', Expense::class);
+        //$this->authorizeForUser($request->user('api'), 'create', Expense::class);
 
         //get warehouses assigned to user
         $user_auth = auth()->user();
@@ -334,7 +334,7 @@ class ExpensesController extends BaseController
     public function edit(Request $request, $id)
     {
 
-        $this->authorizeForUser($request->user('api'), 'update', Expense::class);
+        //$this->authorizeForUser($request->user('api'), 'update', Expense::class);
         $role = Auth::user()->roles()->first();
         $view_records = Role::findOrFail($role->id)->inRole('record_view');
         $Expense = Expense::where('deleted_at', '=', null)->findOrFail($id);
@@ -342,7 +342,7 @@ class ExpensesController extends BaseController
         // Check If User Has Permission view All Records
         if (!$view_records) {
             // Check If User->id === Expense->id
-            $this->authorizeForUser($request->user('api'), 'check_record', $Expense);
+            //$this->authorizeForUser($request->user('api'), 'check_record', $Expense);
         }
 
         if ($Expense->warehouse_id) {

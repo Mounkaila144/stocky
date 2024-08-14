@@ -24,7 +24,7 @@ class ProjectController extends Controller
 
      public function index(request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'view', Project::class);
+        //$this->authorizeForUser($request->user('api'), 'view', Project::class);
         $role = Auth::user()->roles()->first();
 
         // How many items do you want to display.
@@ -55,7 +55,7 @@ class ProjectController extends Controller
         // Check If User Has Permission View  All Records
         $projects = Project::with('company', 'client')
             ->where('deleted_at', '=', null);
-          
+
 
         //Multiple Filter
         $Filtred = $helpers->filter($projects, $columns, $param, $request)
@@ -94,7 +94,7 @@ class ProjectController extends Controller
             $item['client_name']  = $project['client']->name;
             $item['company_name'] = $project['company']->name;
             $item['status']       = $project->status;
-           
+
             $data[] = $item;
         }
 
@@ -117,7 +117,7 @@ class ProjectController extends Controller
         ->where('status', '=', 'completed')
         ->count();
 
-    
+
 
         return response()->json([
             'totalRows' => $totalRows,
@@ -130,7 +130,7 @@ class ProjectController extends Controller
             'count_completed' => $count_completed,
         ]);
     }
- 
+
 
     /**
      * Show the form for creating a new resource.
@@ -139,11 +139,11 @@ class ProjectController extends Controller
      */
     public function create(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'create', Project::class);
+        //$this->authorizeForUser($request->user('api'), 'create', Project::class);
 
         $clients = Client::where('deleted_at', '=', null)->orderBy('id', 'desc')->get(['id','name']);
         $companies = Company::where('deleted_at', '=', null)->orderBy('id', 'desc')->get(['id','name']);
-       
+
         return response()->json([
             'clients' => $clients,
             'companies' => $companies,
@@ -159,7 +159,7 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorizeForUser($request->user('api'), 'create', Project::class);
+        //$this->authorizeForUser($request->user('api'), 'create', Project::class);
 
         $request->validate([
             'title'           => 'required|string|max:255',
@@ -195,7 +195,7 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        //    
+        //
     }
 
     /**
@@ -206,7 +206,7 @@ class ProjectController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'update', Project::class);
+        //$this->authorizeForUser($request->user('api'), 'update', Project::class);
 
         $project = Project::where('deleted_at', '=', null)->findOrFail($id);
         $assigned_employees = EmployeeProject::where('project_id', $id)->pluck('employee_id')->toArray();
@@ -232,7 +232,7 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'update', Project::class);
+        //$this->authorizeForUser($request->user('api'), 'update', Project::class);
 
         $request->validate([
             'title'           => 'required|string|max:255',
@@ -268,7 +268,7 @@ class ProjectController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $this->authorizeForUser($request->user('api'), 'delete', Project::class);
+        //$this->authorizeForUser($request->user('api'), 'delete', Project::class);
 
         Project::whereId($id)->update([
             'deleted_at' => Carbon::now(),
@@ -278,6 +278,6 @@ class ProjectController extends Controller
 
     }
 
-  
+
 
 }

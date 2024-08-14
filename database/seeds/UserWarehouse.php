@@ -13,7 +13,7 @@ class UserWarehouse extends Seeder
     public function run()
     {
         // Insert some stuff
-        DB::table('user_warehouse')->insert(
+        DB::table('user_warehouse')->updateOrInsert(
             array(
                 'user_id'      => 1,
                 'warehouse_id' => 1,
