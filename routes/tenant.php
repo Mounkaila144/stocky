@@ -5,9 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\BaseController;
-use Laravel\passport\Passport;
 
 
 Route::middleware([
@@ -15,7 +13,18 @@ Route::middleware([
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
+
+
+
     Route::namespace('App\Http\Controllers')->group(function () {
+
+
+        Route::get('etiquettes', "EtiquettesController@generatePDF");
+        Route::get('etiquettes/print/{ids}', "EtiquettesController@printSelected");
+        Route::get('etiquettes/copy_all_codes', "EtiquettesController@copyAllCodes");
+
+
+
         Route::post('/login', [
             'uses' => 'Auth\LoginController@login',
             'middleware' => 'Is_Active',
@@ -78,6 +87,7 @@ Route::middleware([
 
 //mes routes Apis
         Route::middleware(['api'])->prefix('api')->group(function () {
+
 
             Route::get('/user', function (Request $request) {
                 return $request->user();

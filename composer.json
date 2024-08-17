@@ -27,6 +27,7 @@
         "macellan/laravel-zip": "^1.0",
         "nesbot/carbon": "^2.38",
         "nwidart/laravel-modules": "^8.3",
+        "picqer/php-barcode-generator": "^2.4",
         "stancl/tenancy": "^3.8",
         "stripe/stripe-php": "^7.76",
         "twilio/sdk": "^6.22",

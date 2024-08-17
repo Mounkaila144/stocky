@@ -1,45 +1,53 @@
+version: '3.8'
+
 services:
-  app:
+  node_app:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: laravel_app
-    restart: unless-stopped
-    working_dir: /var/www
+      dockerfile: Dockerfile.node
+    image: php74_node_app
     volumes:
       - .:/var/www
-      - ./php.ini:/usr/local/etc/php/php.ini
     networks:
-      - laravel
+      - mynetwork
+
+  php_app:
+    build:
+      context: .
+      dockerfile: Dockerfile.composer
+    image: php81_composer_app
+    volumes:
+      - .:/var/www
+    networks:
+      - mynetwork
 
   webserver:
     image: arm64v8/nginx:latest
-    restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"  # Assurez-vous que le port 443 est mappé
     volumes:
       - .:/var/www
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ~/nginx/ssl:/etc/nginx/ssl  # Monte le dossier SSL depuis votre répertoire utilisateur
+
     networks:
-      - laravel
+      - mynetwork
 
   db:
     image: mariadb:latest
-    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: laravel
       MYSQL_USER: laravel
       MYSQL_PASSWORD: laravel
-    ports:
-      - "3307:3306"
     volumes:
       - dbdata:/var/lib/mysql
     networks:
-      - laravel
+      - mynetwork
 
 networks:
-  laravel:
+  mynetwork:
 
 volumes:
   dbdata:

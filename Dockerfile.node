@@ -1,0 +1,41 @@
+# Dockerfile.node
+
+FROM php:7.4-fpm
+
+WORKDIR /var/www
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    locales \
+    zip \
+    jpegoptim optipng pngquant gifsicle \
+    vim \
+    unzip \
+    git \
+    curl \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    nodejs \
+    npm \
+    python2
+
+# Correction pour certaines commandes qui attendent `python` au lieu de `python2`
+RUN ln -s /usr/bin/python2 /usr/bin/python
+
+# Configuration des extensions PHP
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip calendar
+
+# Copier les fichiers dans l'image
+COPY . /var/www
+
+# Installer les dépendances Node.js
+RUN npm install
+
+EXPOSE 9000
+CMD ["php-fpm"]
+
