@@ -27,6 +27,7 @@ Route::middleware([
 
         Route::post('/login', [
             'uses' => 'Auth\LoginController@login',
+            'as' => 'login',  // Définir le nom de la route
             'middleware' => 'Is_Active',
         ]);
 
